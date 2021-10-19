@@ -2,6 +2,8 @@ package br.com.alura.leilao.ui.recyclerview.adapter;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -59,7 +61,7 @@ public class ListaLeilaoAdapterTest {
 
     @Test
     public void deve_AtualizarListaDeLeiloes_QuandoReceberListaDeLeiloes(){
-        Mockito.doNothing().when(adapter).atualizaLista();
+        doNothing().when(adapter).atualizaLista();
 
         adapter.atualiza(new ArrayList<>(Arrays.asList(
                 new Leilao("Console"),
@@ -67,7 +69,7 @@ public class ListaLeilaoAdapterTest {
         )));
         int quantidadeLeiloesDevolvida = adapter.getItemCount();
 
-        Mockito.verify(adapter).atualizaLista();
+        verify(adapter).atualizaLista();
         assertThat(quantidadeLeiloesDevolvida, is(2));
 
     }
