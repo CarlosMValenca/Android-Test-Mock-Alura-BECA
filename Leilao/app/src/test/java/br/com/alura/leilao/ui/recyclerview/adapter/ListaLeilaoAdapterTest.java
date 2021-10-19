@@ -31,7 +31,12 @@ import android.support.annotation.Nullable;
 import android.view.Display;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,12 +49,17 @@ import java.util.Arrays;
 
 import br.com.alura.leilao.model.Leilao;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ListaLeilaoAdapterTest {
+
+    @Mock
+    private Context context;
+    @Spy
+    private ListaLeilaoAdapter adapter = new ListaLeilaoAdapter(context);
 
     @Test
     public void deve_AtualizarListaDeLeiloes_QuandoReceberListaDeLeiloes(){
-        Context context = Mockito.mock(Context.class);
-        ListaLeilaoAdapter adapter = Mockito.spy(new ListaLeilaoAdapter(context));
+        MockitoAnnotations.initMocks(this);
         Mockito.doNothing().when(adapter).atualizaLista();
 
         adapter.atualiza(new ArrayList<>(Arrays.asList(
