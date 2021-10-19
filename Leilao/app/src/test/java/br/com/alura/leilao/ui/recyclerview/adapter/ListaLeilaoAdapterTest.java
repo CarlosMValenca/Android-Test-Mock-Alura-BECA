@@ -59,7 +59,6 @@ public class ListaLeilaoAdapterTest {
 
     @Test
     public void deve_AtualizarListaDeLeiloes_QuandoReceberListaDeLeiloes(){
-        MockitoAnnotations.initMocks(this);
         Mockito.doNothing().when(adapter).atualizaLista();
 
         adapter.atualiza(new ArrayList<>(Arrays.asList(
