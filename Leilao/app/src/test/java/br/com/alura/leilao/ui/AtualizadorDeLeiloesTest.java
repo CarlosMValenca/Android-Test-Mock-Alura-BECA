@@ -1,19 +1,18 @@
-package br.com.alura.leilao.ui.activity;
+package br.com.alura.leilao.ui;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
 import android.content.Context;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
@@ -25,19 +24,22 @@ import java.util.List;
 import br.com.alura.leilao.api.retrofit.client.LeilaoWebClient;
 import br.com.alura.leilao.api.retrofit.client.RespostaListener;
 import br.com.alura.leilao.model.Leilao;
+import br.com.alura.leilao.ui.activity.ListaLeilaoActivity;
 import br.com.alura.leilao.ui.recyclerview.adapter.ListaLeilaoAdapter;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ListaLeilaoActivityTest {
+public class AtualizadorDeLeiloesTest {
 
     @Mock
     private ListaLeilaoAdapter adapter;
     @Mock
     private LeilaoWebClient client;
+    @Mock
+    private Context context;
 
     @Test
-    public void deve_AtualizarListaDeLeiloes_QuandoBuscarLeiloesDaApi()  {
-        ListaLeilaoActivity activity = new ListaLeilaoActivity();
+    public void deve_AtualizarListaDeLeiloes_QuandoBuscarLeiloesDaApi() {
+        AtualizadorDeLeiloes atualizador = new AtualizadorDeLeiloes();
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) {
@@ -50,13 +52,31 @@ public class ListaLeilaoActivityTest {
             }
         }).when(client).todos(any(RespostaListener.class));
 
-        activity.buscaLeiloes(adapter, client);
+        atualizador.buscaLeiloes(adapter, client, context);
 
         verify(client).todos(any(RespostaListener.class));
         verify(adapter).atualiza(new ArrayList<>(Arrays.asList(
                 new Leilao("Computador"),
                 new Leilao("Carro")
         )));
+    }
+
+    @Test
+    public void deve_ApresentarMensagemDeFalha_QuandoFalharABuscaDeLeiloes(){
+        AtualizadorDeLeiloes atualizador = Mockito.spy(new AtualizadorDeLeiloes());
+        doNothing().when(atualizador).mostraMensagemDeFalha(context);
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                RespostaListener<List<Leilao>> argument = invocation.getArgument(0);
+                argument.falha(anyString());
+                return null;
+            }
+        }).when(client).todos(any(RespostaListener.class));
+
+        atualizador.buscaLeiloes(adapter, client, context);
+
+        verify(atualizador).mostraMensagemDeFalha(context);
     }
 
 }
