@@ -1,7 +1,6 @@
 package br.com.alura.leilao.api;
 
 import static br.com.alura.leilao.ui.dialog.AvisoDialogManager.mostraAvisoLanceSeguidoDoMesmoUsuario;
-import static br.com.alura.leilao.ui.dialog.AvisoDialogManager.mostraAvisoUsuarioJaDeuCincoLances;
 import static br.com.alura.leilao.ui.dialog.AvisoDialogManager.mostraToastFalhaNoEnvio;
 
 import android.content.Context;
@@ -51,7 +50,7 @@ public class EnviadorDeLance {
         } catch (LanceSeguidoDoMesmoUsuarioException exception) {
             mostraAvisoLanceSeguidoDoMesmoUsuario(context);
         } catch (UsuarioJaDeuCincoLancesException exception) {
-            mostraAvisoUsuarioJaDeuCincoLances(context);
+            manager.mostraAvisoUsuarioJaDeuCincoLances(context);
         }
     }
 
