@@ -35,12 +35,12 @@ public class ListaLeilaoActivityTest {
     private LeilaoWebClient client;
 
     @Test
-    public void deve_AtualizarListaDeLeiloes_QuandoBuscarLeiloesDaApi() throws InterruptedException {
+    public void deve_AtualizarListaDeLeiloes_QuandoBuscarLeiloesDaApi()  {
         ListaLeilaoActivity activity = new ListaLeilaoActivity();
         Mockito.doNothing().when(adapter).atualizaLista();
         Mockito.doAnswer(new Answer() {
             @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
+            public Object answer(InvocationOnMock invocation) {
                 RespostaListener<List<Leilao>> argument = invocation.getArgument(0);
                 argument.sucesso(new ArrayList<>(Arrays.asList(
                         new Leilao("Computador"),
@@ -51,10 +51,12 @@ public class ListaLeilaoActivityTest {
         }).when(client).todos(ArgumentMatchers.any(RespostaListener.class));
 
         activity.buscaLeiloes(adapter, client);
-        Thread.sleep(2000);
-        int quantidadeLeiloesDevolvida = adapter.getItemCount();
 
-        assertThat(quantidadeLeiloesDevolvida, is(2));
+        Mockito.verify(client).todos(ArgumentMatchers.any(RespostaListener.class));
+        Mockito.verify(adapter).atualiza(new ArrayList<>(Arrays.asList(
+                new Leilao("Computador"),
+                new Leilao("Carro")
+        )));
     }
 
 }
