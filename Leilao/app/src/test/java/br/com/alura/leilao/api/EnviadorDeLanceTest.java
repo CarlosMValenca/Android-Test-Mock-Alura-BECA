@@ -1,14 +1,12 @@
 package br.com.alura.leilao.api;
 
-import static org.junit.Assert.*;
-
-import android.content.Context;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import br.com.alura.leilao.api.retrofit.client.LeilaoWebClient;
@@ -27,24 +25,22 @@ public class EnviadorDeLanceTest {
     @Mock
     private EnviadorDeLance.LanceProcessadoListener listener;
     @Mock
-    private Context context;
-    @Mock
     private AvisoDialogManager manager;
+    @Mock
+    private Leilao leilao;
 
     @Test
     public void deve_MostrarMensagemDeFalha_QuandoLanceForMenorQueUltimoLance(){
         EnviadorDeLance enviador = new EnviadorDeLance(
                 client,
                 listener,
-                context,
                 manager);
-        Leilao computador = Mockito.mock(Leilao.class);
-        Mockito.doThrow(LanceMenorQueUltimoLanceException.class)
-                .when(computador).propoe(ArgumentMatchers.any(Lance.class));
+        doThrow(LanceMenorQueUltimoLanceException.class)
+                .when(leilao).propoe(ArgumentMatchers.any(Lance.class));
 
-        enviador.envia(computador, new Lance(new Usuario("Fran"), 100));
+        enviador.envia(leilao, new Lance(new Usuario("Fran"), 100));
 
-        Mockito.verify(manager).mostraAvisoLanceMenorQueUltimoLance(context);
+        verify(manager).mostraAvisoLanceMenorQueUltimoLance();
     }
 
     @Test
@@ -52,16 +48,14 @@ public class EnviadorDeLanceTest {
         EnviadorDeLance enviador = new EnviadorDeLance(
                 client,
                 listener,
-                context,
                 manager);
-        Leilao computador = Mockito.mock(Leilao.class);
-        Mockito.doThrow(UsuarioJaDeuCincoLancesException.class)
-                .when(computador).propoe(ArgumentMatchers.any(Lance.class));
+        doThrow(UsuarioJaDeuCincoLancesException.class)
+                .when(leilao).propoe(ArgumentMatchers.any(Lance.class));
 
 
-        enviador.envia(computador, new Lance(new Usuario( "Alex"),  200));
+        enviador.envia(leilao, new Lance(new Usuario( "Alex"),  200));
 
-        Mockito.verify(manager).mostraAvisoUsuarioJaDeuCincoLances(context);
+        verify(manager).mostraAvisoUsuarioJaDeuCincoLances();
     }
 
 
